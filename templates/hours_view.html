@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Total Hours</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Total Hours</h1>
+    </header>
+    <main>
+        <p>Week starting: {{ week_start }}</p>
+        <p>Total hours worked: {{ total_hours }}</p>
+        <p><a href="{{ url_for('home') }}">Back to form</a></p>
+    </main>
+    <footer>
+        <p>&copy; 2023 My Company, Inc.</p>
+    </footer>
+</body>
+</html>

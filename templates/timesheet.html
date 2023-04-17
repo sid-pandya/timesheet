@@ -1,0 +1,269 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Time Sheet</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="header">
+      <a href="/?week_offset={{ week_offset - 1 }}" class="prev-button"
+        >&lt;Previous Week</a
+      >
+      <span class="week-label"
+        >Week of {{ rows[0].date }} - {{ rows[-1].date }}</span
+      >
+      <a href="/?week_offset={{ week_offset + 1 }}" class="next-button"
+        >Next Week &gt;</a
+      >
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time In</th>
+          <th>Time Out</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td>{{ row.date }}</td>
+          <td><input type="time" placeholder="Time in" /></td>
+          <td><input type="time" placeholder="Time out" /></td>
+          <td><button class="add-button">Add</button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script>
+      // Add click event listener to all add buttons
+      const addButtons = document.querySelectorAll(".add-button");
+      addButtons.forEach((addButton) => {
+        addButton.addEventListener("click", () => {
+          const tableRow = addButton.parentElement.parentElement;
+          const newRow = document.createElement("tr");
+          const dateCell = document.createElement("td");
+          const timeInCell = document.createElement("td");
+          timeInCell.innerHTML = '<input type="time" name="time-in">';
+          const timeOutCell = document.createElement("td");
+          timeOutCell.innerHTML = '<input type="time" name="time-out">';
+          const removeButtonCell = document.createElement("td");
+          removeButtonCell.innerHTML =
+            '<button class="remove-button">Remove</button>';
+          removeButtonCell.addEventListener("click", (event) => {
+            event.target.parentNode.parentNode.parentNode.removeChild(
+              event.target.parentNode.parentNode
+            );
+          });
+          newRow.appendChild(dateCell);
+          newRow.appendChild(timeInCell);
+          newRow.appendChild(timeOutCell);
+          newRow.appendChild(removeButtonCell);
+          tableRow.parentElement.insertBefore(newRow, tableRow.nextSibling);
+        });
+      });
+    </script>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Time Sheet</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="header">
+      <a href="/?week_offset={{ week_offset - 1 }}" class="prev-button"
+        >&lt;Previous Week</a
+      >
+      <span class="week-label"
+        >Week of {{ rows[0].date }} - {{ rows[-1].date }}</span
+      >
+      <a href="/?week_offset={{ week_offset + 1 }}" class="next-button"
+        >Next Week &gt;</a
+      >
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time In</th>
+          <th>Time Out</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td data-date="{{row.day}}">{{ row.date }}</td>
+          <td><input type="time" name="time-in" placeholder="Time in" /></td>
+          <td><input type="time" name="time-out" placeholder="Time out" /></td>
+          <td><button class="add-button">Add</button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="submit-container">
+      <!-- <span>Work Hours: </span> -->
+      <button class="submit-button">Submit</button>
+    </div>
+    <script>
+      // Add click event listener to all add buttons
+      const addButtons = document.querySelectorAll(".add-button");
+      addButtons.forEach((addButton) => {
+        addButton.addEventListener("click", (event) => {
+          const tableRow = addButton.parentElement.parentElement;
+          const newRow = document.createElement("tr");
+          const dateCell = document.createElement("td");
+          dateCell.setAttribute(
+            "data-date",
+            event.target.parentNode.parentNode.firstElementChild.getAttribute(
+              "data-date"
+            )
+          );
+          const timeInCell = document.createElement("td");
+          timeInCell.innerHTML = '<input type="time" name="time-in">';
+          const timeOutCell = document.createElement("td");
+          timeOutCell.innerHTML = '<input type="time" name="time-out">';
+          const removeButtonCell = document.createElement("td");
+          removeButtonCell.innerHTML =
+            '<button class="remove-button">Remove</button>';
+          removeButtonCell.addEventListener("click", (event) => {
+            event.target.parentNode.parentNode.parentNode.removeChild(
+              event.target.parentNode.parentNode
+            );
+          });
+          newRow.appendChild(dateCell);
+          newRow.appendChild(timeInCell);
+          newRow.appendChild(timeOutCell);
+          newRow.appendChild(removeButtonCell);
+          tableRow.parentElement.insertBefore(newRow, tableRow.nextSibling);
+        });
+      });
+
+      getDateFormat = (dateData) => {
+        const datetime = dateData.split(":");
+        return new Date(
+          datetime[0],
+          datetime[1] - 1,
+          datetime[2]
+        ).toISOString();
+      };
+
+      // Add click event listener to submit button
+      const submitButton = document.querySelector(".submit-button");
+      submitButton.addEventListener("click", async (event) => {
+        const firstTd = document
+          .querySelector("tbody tr")
+          .firstElementChild.getAttribute("data-date");
+        currentWeekDay = getDateFormat(firstTd);
+        const timesheet = {};
+        const allChild = document.querySelector("tbody").children;
+        Array.from(allChild).forEach((ele) => {
+          const timeIn = ele.querySelector("[name=time-in]").value;
+          const timeOut = ele.querySelector("[name=time-out]").value;
+          const date = ele.querySelector("td").getAttribute("data-date");
+          if (timeIn && timeOut) {
+            const currentDate = getDateFormat(date);
+            if (currentDate in timesheet) {
+              timesheet[currentDate].push(`${timeIn}-${timeOut}`);
+            } else {
+              timesheet[currentDate] = [`${timeIn}-${timeOut}`];
+            }
+          }
+        });
+        const response = await fetch("/submithours", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(JSON.stringify([currentWeekDay, timesheet, 1])),
+        });
+      });
+      window.onload = function () {
+        const weekDate = document
+          .querySelector("tbody tr td")
+          ?.getAttribute("data-date")
+          .split(":");
+        const weekMondayDate = weekDate.join("-");
+        if (weekDate) {
+          // Make API GET request
+          fetch(`/gethours?week=${weekMondayDate}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.length == 1) {
+                // Log the response data to console
+                console.log("Got the timehours for the week");
+                const timesheet = JSON.parse(data[0]);
+                for (let key in timesheet) {
+                  let currentDate = new Date(key)
+                    .toLocaleDateString()
+                    .split("/");
+                  currentDate.reverse();
+                  currentDate = currentDate.join(":");
+                  const dateElement = document.querySelector(
+                    `[data-date='${currentDate}']`
+                  );
+                  for (let count = 0; count < timesheet[key].length; count++) {
+                    const ele = timesheet[key][count];
+                    if (count == 0) {
+                      const timeRange = ele.split("-");
+                      const timeIn = timeRange[0];
+                      const timeOut = timeRange[1];
+                      dateElement.parentNode.querySelector(
+                        '[name="time-in"]'
+                      ).value = timeIn;
+                      dateElement.parentNode.querySelector(
+                        '[name="time-out"]'
+                      ).value = timeIn;
+                    } else {
+                      const newRow = document.createElement("tr");
+                      const dateCell = document.createElement("td");
+                      dateCell.setAttribute("data-date", currentDate);
+                      const timeInCell = document.createElement("td");
+                      timeInCell.innerHTML = `<input type="time" name="time-in" value=${
+                        ele.split("-")[0]
+                      }>`;
+                      const timeOutCell = document.createElement("td");
+                      timeOutCell.innerHTML = `<input type="time" name="time-out" value=${
+                        ele.split("-")[1]
+                      }>`;
+                      const removeButtonCell = document.createElement("td");
+                      removeButtonCell.innerHTML =
+                        '<button class="remove-button">Remove</button>';
+                      removeButtonCell.addEventListener("click", (event) => {
+                        event.target.parentNode.parentNode.parentNode.removeChild(
+                          event.target.parentNode.parentNode
+                        );
+                      });
+                      newRow.appendChild(dateCell);
+                      newRow.appendChild(timeInCell);
+                      newRow.appendChild(timeOutCell);
+                      newRow.appendChild(removeButtonCell);
+                      dateElement.parentElement.parentElement.insertBefore(
+                        newRow,
+                        dateElement.parentElement.nextSibling
+                      );
+                    }
+                  }
+                }
+              }
+            })
+            .catch((error) => {
+              console.error(error); // Log any errors to console
+            });
+        }
+      };
+    </script>
+  </body>
+</html>

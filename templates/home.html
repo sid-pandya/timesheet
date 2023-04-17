@@ -1,0 +1,169 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>My Web App</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <header>
+      <h2>Welcome to My Web App!</h2>
+    </header>
+
+    <main>
+      <h1>Track Your Working Hours</h1>
+
+      <p>Total hours: <span id="total-hours"></span></p>
+
+      <form id="hours-form">
+        <label for="week-start">Week Starting:</label>
+        <br />
+        <input
+          type="date"
+          id="week-start"
+          name="week-start"
+          required
+        /><br /><br />
+
+        <label for="hours-mon">Monday:</label>
+        <br />
+        <input
+          type="number"
+          id="hours-mon"
+          name="hours-mon"
+          min="0"
+          max="24"
+          step="0.5"
+        /><br />
+
+        <label for="hours-tue">Tuesday:</label>
+        <br />
+        <input
+          type="number"
+          id="hours-tue"
+          name="hours-tue"
+          min="0"
+          max="24"
+          step="0.5"
+        /><br />
+
+        <label for="hours-wed">Wednesday:</label>
+        <br />
+        <input
+          type="number"
+          id="hours-wed"
+          name="hours-wed"
+          min="0"
+          max="24"
+          step="0.5"
+        /><br />
+
+        <label for="hours-thu">Thursday:</label>
+        <br />
+        <input
+          type="number"
+          id="hours-thu"
+          name="hours-thu"
+          min="0"
+          max="24"
+          step="0.5"
+        /><br />
+
+        <label for="hours-fri">Friday:</label>
+        <br />
+        <input
+          type="number"
+          id="hours-fri"
+          name="hours-fri"
+          min="0"
+          max="24"
+          step="0.5"
+        /><br /><br />
+
+        <button type="submit" onclick="calculateTotal()">Submit</button>
+      </form>
+    </main>
+
+    <footer>
+      <p>&copy; 2023 My Company</p>
+    </footer>
+
+    <script>
+      function calculateTotal() {
+        var hours = [
+          parseFloat(document.getElementById("hours-mon").value),
+          parseFloat(document.getElementById("hours-tue").value),
+          parseFloat(document.getElementById("hours-wed").value),
+          parseFloat(document.getElementById("hours-thu").value),
+          parseFloat(document.getElementById("hours-fri").value),
+        ];
+
+        var total = hours.reduce(function (acc, val) {
+          return acc + val;
+        });
+
+        document.getElementById("total-hours").innerHTML = total;
+      }
+    </script>
+  </body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Working Hours</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h2>Working Hours</h2>
+    <form method="POST">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time In</th>
+            <th>Time Out</th>
+            <th>Break Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for day in days %}
+          <tr>
+            <td>{{ day.date }}</td>
+            <td>
+              <input
+                type="time"
+                name="{{ day.id }}-time_in"
+                value="{{ day.time_in }}"
+              />
+            </td>
+            <td>
+              <input
+                type="time"
+                name="{{ day.id }}-time_out"
+                value="{{ day.time_out }}"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                name="{{ day.id }}-break_time"
+                value="{{ day.break_time }}"
+              />
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <input type="submit" value="Save" />
+    </form>
+    <p>Total Working Hours: {{ total_hours }}</p>
+  </body>
+</html>

@@ -1,0 +1,119 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.prev-button,
+.next-button {
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.prev-button:hover,
+.next-button:hover {
+    text-decoration: none;
+}
+
+.week-label {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    border: none;
+    border-bottom: 2px solid #ddd;
+    background-color: transparent;
+    font-size: 16px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+input[type=text]:focus {
+    outline: none;
+    border-bottom: 2px solid #007bff;
+}
+
+.add-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.remove-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    border: none;
+    background-color: #ff0033;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+.add-button:hover {
+    background-color: #0069d9;
+}
+
+.submit-container {
+    text-align: center;
+    margin: 20px 0;
+  }
+  
+  .submit-button {
+    display: block;
+    padding: 10px;
+    margin: 0 auto;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #0069d9;
+  }
+  
